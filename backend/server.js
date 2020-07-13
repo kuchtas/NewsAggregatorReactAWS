@@ -1,5 +1,6 @@
 "use strict";
 const express = require("express");
+const { getWPROST } = require("./getWPROST");
 const app = express();
 const PORT = process.env.PORT || 3000;
 

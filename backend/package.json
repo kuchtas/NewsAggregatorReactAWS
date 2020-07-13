@@ -1,0 +1,23 @@
+{
+  "name": "wyszukiwarka-backend",
+  "version": "1.0.0",
+  "description": "Backend part of my Hacktyki 2020 project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/hacktyki-2020/markuc-js-wyszukiwarka.git"
+  },
+  "author": "Marcin Kuchta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/hacktyki-2020/markuc-js-wyszukiwarka/issues"
+  },
+  "homepage": "https://gitlab.com/hacktyki-2020/markuc-js-wyszukiwarka#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^5.1.0"
+  }
+}

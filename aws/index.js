@@ -1,7 +1,7 @@
 const AWS = require("aws-sdk");
 const chromium = require("chrome-aws-lambda");
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   let body;
   let statusCode = "200";
   const headers = {

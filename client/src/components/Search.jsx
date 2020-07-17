@@ -1,16 +1,28 @@
 import React, { useState } from "react";
-import axios from "axios";
 
 const Search = () => {
   const [searchString, setSearchString] = useState("");
 
   const sendSearchString = async () => {
-    axios
-      .post("/search", {
-        searchString: searchString,
+    fetch(
+      `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews`,
+      {
+        method: "POST",
+        withCredentials: true,
+        headers: {
+          "X-Api-Key": process.env.REACT_APP_API_KEY,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ searchString: searchString }),
+      }
+    )
+      .then((resp) => resp.json())
+      .then(function (data) {
+        console.log(data);
       })
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const handleSubmit = (event) => {

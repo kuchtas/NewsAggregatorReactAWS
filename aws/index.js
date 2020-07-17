@@ -11,8 +11,9 @@ exports.handler = async (event, context) => {
     "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
   };
   try {
-    if (event.httpMethod === "GET") {
-      body = await getWPROST("wybory");
+    if (event.httpMethod === "POST") {
+      const data = JSON.parse(event.body);
+      body = await getWPROST(data.searchString);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);
     }

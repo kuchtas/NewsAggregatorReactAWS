@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Search from "./Search";
 import News from "./News";
+import { Container } from "reactstrap";
 
 const Body = () => {
   const [searchString, setSearchString] = useState("");
@@ -40,10 +41,10 @@ const Body = () => {
   };
 
   return (
-    <div className="container">
+    <Container>
       <Search onSubmit={handleSubmit} onChange={handleChange} />
       <News articles={articles} />
-    </div>
+    </Container>
   );
 };
 

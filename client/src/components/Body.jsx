@@ -4,6 +4,7 @@ import News from "./News";
 
 const Body = () => {
   const [searchString, setSearchString] = useState("");
+  const [articles, setArticles] = useState([]);
 
   const sendSearchString = async () => {
     fetch(
@@ -19,10 +20,10 @@ const Body = () => {
       }
     )
       .then((resp) => resp.json())
-      .then(function (data) {
-        console.log(data);
+      .then((data) => {
+        setArticles(data);
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error);
       });
   };
@@ -37,10 +38,11 @@ const Body = () => {
   const handleChange = (event) => {
     setSearchString(event.target.value);
   };
+
   return (
     <div className="container">
       <Search onSubmit={handleSubmit} onChange={handleChange} />
-      <News />
+      <News articles={articles} />
     </div>
   );
 };

@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Search from "./Search";
 import News from "./News";
-import { Container } from "reactstrap";
+import { Container, Spinner } from "reactstrap";
 
 const Body = () => {
+  const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [articles, setArticles] = useState([]);
 
   const sendSearchString = async () => {
+    setLoading(true);
+    setArticles([]);
+
     fetch(
       `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews`,
       {
@@ -23,6 +27,7 @@ const Body = () => {
       .then((resp) => resp.json())
       .then((data) => {
         setArticles(data);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -39,10 +44,14 @@ const Body = () => {
   const handleChange = (event) => {
     setSearchString(event.target.value);
   };
+  const getSpinnerClass = () => {
+    return loading ? "mt-5 d-inline-flex" : "d-none";
+  };
 
   return (
-    <Container>
+    <Container className="text-center">
       <Search onSubmit={handleSubmit} onChange={handleChange} />
+      <Spinner color="primary" className={getSpinnerClass()} />
       <News articles={articles} />
     </Container>
   );

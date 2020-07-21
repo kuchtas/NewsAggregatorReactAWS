@@ -8,11 +8,16 @@ const Article = ({ site, title, link, thumbnail }) => {
     switch (site) {
       case "WPROST":
         return wprostLogo;
+      default:
+        return missingPicture;
     }
   };
 
   return (
-    <Container className="mt-3 border" style={{ position: "relative" }}>
+    <Container
+      className="mt-3 border text-left"
+      style={{ position: "relative" }}
+    >
       <img
         src={getLogo(site)}
         width="50"
@@ -27,13 +32,14 @@ const Article = ({ site, title, link, thumbnail }) => {
         alt="News thubmnail"
         className="m-3"
       />
+
       <a
         href={link}
         className="stretched-link"
         target="_blank"
         rel="noopener noreferrer"
       ></a>
-      {title}
+      <span className="lead">{title}</span>
     </Container>
   );
 };

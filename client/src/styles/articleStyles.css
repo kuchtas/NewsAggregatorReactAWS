@@ -1,0 +1,41 @@
+/* xs */
+.logo {
+  width: 30px;
+  height: auto;
+}
+.thumbnail {
+  width: 50px;
+  height: auto;
+}
+
+/* sm */
+@media (min-width: 768px) {
+  .logo {
+    width: 30px;
+  }
+  .thumbnail {
+    width: 80px;
+  }
+}
+/* md */
+@media (min-width: 992px) {
+  .logo {
+    width: 40px;
+  }
+  .thumbnail {
+    width: 80px;
+  }
+}
+/* lg */
+@media (min-width: 1200px) {
+  .logo {
+    width: 50px;
+  }
+  .thumbnail {
+    width: 100px;
+  }
+}
+
+.article:hover {
+  transform: scale(1.01);
+}

@@ -5,7 +5,14 @@ const Header = () => {
   return (
     <div>
       <Navbar color="primary" className="justify-content-center">
-        <h2 className="text-white">Wyszukiwarka artykułów</h2>
+        <h2
+          className="text-white text-center"
+          style={{
+            fontSize: "calc(1em + 1vw)",
+          }}
+        >
+          Wyszukiwarka newsów
+        </h2>
       </Navbar>
     </div>
   );

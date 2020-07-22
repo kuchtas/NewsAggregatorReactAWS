@@ -7,7 +7,7 @@ const Search = ({ onSubmit, onChange }) => {
       <Form onSubmit={onSubmit}>
         <Input
           type="search"
-          placeholder="Na jaki temat chcesz poszukać wiadomości?"
+          placeholder="Podaj temat wiadomości..."
           onChange={onChange}
         />
       </Form>

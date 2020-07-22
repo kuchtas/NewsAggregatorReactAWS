@@ -15,51 +15,58 @@ const getWPROST = async (word) => {
     return this.find(selector).length > 0;
   };
 
-  for (let i = 1; i < 10; i++) {
-    const title = $(`#section-list-2 > li:nth-child(${i}) > a.title`).text();
+  try {
+    for (let i = 1; i < 10; i++) {
+      const title = $(`#section-list-2 > li:nth-child(${i}) > a.title`).text();
 
-    const link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
-      "href"
-    );
+      const link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
+        "href"
+      );
 
-    let thumbnail = "";
-    if (
-      $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
-    ) {
-      thumbnail = $(`#section-list-2 > li:nth-child(${i}) > a.image.image-th`)
-        .css("background-image")
-        .replace(`url(`, `https://www.wprost.pl/`)
-        .slice(0, -1);
+      let thumbnail = "";
+      if (
+        $(`#section-list-2 > li:nth-child(${i}) > a.image`).hasClass("image-th")
+      ) {
+        thumbnail = $(`#section-list-2 > li:nth-child(${i}) > a.image.image-th`)
+          .css("background-image")
+          .replace(`url(`, `https://www.wprost.pl/`)
+          .slice(0, -1);
+      }
+
+      articles.push({
+        site: "WPROST",
+        titleAndLink: { title, link },
+        thumbnail,
+      });
     }
 
-    articles.push({
-      site: "WPROST",
-      titleAndLink: { title, link },
-      thumbnail,
-    });
-  }
+    for (let i = 1; i < 22; i++) {
+      const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
 
-  for (let i = 1; i < 22; i++) {
-    const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
+      const link = $(`#section-list > li:nth-child(${i}) > a.title`).attr(
+        "href"
+      );
 
-    const link = $(`#section-list > li:nth-child(${i}) > a.title`).attr("href");
+      let thumbnail = "";
+      if (
+        $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
+      ) {
+        thumbnail = $(`#section-list > li:nth-child(${i}) > a.image.image-th`)
+          .css("background-image")
+          .replace(`url(`, `https://www.wprost.pl/`)
+          .slice(0, -1);
+      }
 
-    let thumbnail = "";
-    if (
-      $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
-    ) {
-      thumbnail = $(`#section-list > li:nth-child(${i}) > a.image.image-th`)
-        .css("background-image")
-        .replace(`url(`, `https://www.wprost.pl/`)
-        .slice(0, -1);
+      articles.push({
+        site: "WPROST",
+        titleAndLink: { title, link },
+        thumbnail,
+      });
     }
-
-    articles.push({
-      site: "WPROST",
-      titleAndLink: { title, link },
-      thumbnail,
-    });
+  } catch (error) {
+    console.log(error);
   }
+
   return articles;
 };
 

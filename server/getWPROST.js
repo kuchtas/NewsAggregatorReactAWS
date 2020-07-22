@@ -33,11 +33,13 @@ const getWPROST = async (word) => {
           .slice(0, -1);
       }
 
-      articles.push({
-        site: "WPROST",
-        titleAndLink: { title, link },
-        thumbnail,
-      });
+      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+        articles.push({
+          site: "WPROST",
+          titleAndLink: { title, link },
+          thumbnail,
+        });
+      }
     }
 
     for (let i = 1; i < 22; i++) {
@@ -57,16 +59,17 @@ const getWPROST = async (word) => {
           .slice(0, -1);
       }
 
-      articles.push({
-        site: "WPROST",
-        titleAndLink: { title, link },
-        thumbnail,
-      });
+      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+        articles.push({
+          site: "WPROST",
+          titleAndLink: { title, link },
+          thumbnail,
+        });
+      }
     }
   } catch (error) {
     console.log(error);
   }
-
   return articles;
 };
 

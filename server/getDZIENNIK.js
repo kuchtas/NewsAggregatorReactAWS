@@ -21,11 +21,11 @@ const getDZIENNIK = async (word) => {
     ).text();
 
     const link = $(
-      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(1) > div > h4 > a`
+      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
     ).attr("href");
 
     const thumbnail = $(
-      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(1) > a > img`
+      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
     ).attr("src");
 
     articles.push({

@@ -1,68 +1,65 @@
-const puppeteer = require("puppeteer");
+const axios = require("axios");
+const cheerio = require("cheerio");
 
-const extractTitleAndLinkWPROST = async (article) => {
-  const linkToArticle = await article.getProperty("href");
-  const rawLinkToArticle = await linkToArticle.jsonValue();
-
-  const titleOfArticle = await article.getProperty("textContent");
-  const rawTitleOfArticle = await titleOfArticle.jsonValue();
-
-  return { rawTitleOfArticle, rawLinkToArticle };
-};
-
-const extractThumbnailWPROST = async (thumbnail) => {
-  const thumbnailOfArticle = await thumbnail.getProperty("style");
-  const urlOfThumbnail = await thumbnailOfArticle.getProperty(
-    "background-image"
-  );
-  const correctUrlOfThumbnail = await urlOfThumbnail.jsonValue();
-  const rawUrlOfThumbnail = correctUrlOfThumbnail
-    .replace(`url("`, `https://www.wprost.pl/`)
-    .slice(0, -2);
-
-  return { rawUrlOfThumbnail };
-};
+async function fetchHTML(url) {
+  const { data } = await axios.get(url);
+  return cheerio.load(data);
+}
 
 const getWPROST = async (word) => {
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
   const articles = [];
-  await page.goto(`https://www.wprost.pl/wyszukaj/${word}`);
 
-  const accept = await page.$x(`/html/body/div[8]/div[1]/div/div/div[2]/a[2]`); // find the button for accepting the RODO to access the site
-  await accept[0].click();
+  const $ = await fetchHTML(`https://www.wprost.pl/wyszukaj/${word}`);
 
-  try {
-    for (let i = 1; i < 10; i++) {
-      const [article] = await page.$x(
-        `//*[@id="section-list-2"]/li[${i}]/a[1]`
-      );
-      const [thumbnail] = await page.$x(
-        `//*[@id="section-list-2"]/li[${i}]/a[2]`
-      );
+  $.prototype.exists = function (selector) {
+    return this.find(selector).length > 0;
+  };
 
-      const titleAndLink = await extractTitleAndLinkWPROST(article);
-      const thumbnailURL = await extractThumbnailWPROST(thumbnail);
+  for (let i = 1; i < 10; i++) {
+    const title = $(`#section-list-2 > li:nth-child(${i}) > a.title`).text();
 
-      articles.push({ titleAndLink, thumbnailURL });
+    const link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
+      "href"
+    );
+
+    let thumbnail = "";
+    if (
+      $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
+    ) {
+      thumbnail = $(`#section-list-2 > li:nth-child(${i}) > a.image.image-th`)
+        .css("background-image")
+        .replace(`url(`, `https://www.wprost.pl/`)
+        .slice(0, -1);
     }
 
-    for (let i = 1; i < 22; i++) {
-      const [article] = await page.$x(`//*[@id="section-list"]/li[${i}]/a[1]`);
-      const [thumbnail] = await page.$x(
-        `//*[@id="section-list"]/li[${i}]/a[2]`
-      );
-
-      const titleAndLink = await extractTitleAndLinkWPROST(article);
-      const thumbnailURL = await extractThumbnailWPROST(thumbnail);
-
-      articles.push({ titleAndLink, thumbnailURL });
-    }
-  } catch {
-    console.log("End of articles");
+    articles.push({
+      site: "WPROST",
+      titleAndLink: { title, link },
+      thumbnail,
+    });
   }
-  await page.close();
-  await browser.close();
+
+  for (let i = 1; i < 22; i++) {
+    const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
+
+    const link = $(`#section-list > li:nth-child(${i}) > a.title`).attr("href");
+
+    let thumbnail = "";
+    if (
+      $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
+    ) {
+      thumbnail = $(`#section-list > li:nth-child(${i}) > a.image.image-th`)
+        .css("background-image")
+        .replace(`url(`, `https://www.wprost.pl/`)
+        .slice(0, -1);
+    }
+
+    articles.push({
+      site: "WPROST",
+      titleAndLink: { title, link },
+      thumbnail,
+    });
+  }
   return articles;
 };
 

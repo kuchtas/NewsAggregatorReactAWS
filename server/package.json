@@ -18,7 +18,7 @@
   "homepage": "https://gitlab.com/hacktyki-2020/markuc-js-wyszukiwarka#readme",
   "dependencies": {
     "axios": "^0.19.2",
-    "express": "^4.17.1",
-    "puppeteer": "^5.1.0"
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.1"
   }
 }

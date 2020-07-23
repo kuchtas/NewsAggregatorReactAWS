@@ -24,6 +24,7 @@ exports.handler = async (event) => {
       Array.prototype.push.apply(body, wprostArticles);
       Array.prototype.push.apply(body, dzienikArticles);
       Array.prototype.push.apply(body, okoArticles);
+      shuffle(body);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);
     }
@@ -44,6 +45,14 @@ exports.handler = async (event) => {
 async function fetchHTML(url) {
   const { data } = await axios.get(url);
   return cheerio.load(data);
+}
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 const getWPROST = async (word) => {

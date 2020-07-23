@@ -1,38 +1,44 @@
 /* xs */
 .logo {
   width: 30px;
-  height: auto;
+  height: 30px;
 }
 .thumbnail {
   width: 50px;
-  height: auto;
+  height: 50px;
 }
 
 /* sm */
 @media (min-width: 768px) {
   .logo {
     width: 30px;
+    height: 30px;
   }
   .thumbnail {
     width: 80px;
+    height: 80px;
   }
 }
 /* md */
 @media (min-width: 992px) {
   .logo {
     width: 40px;
+    height: 40px;
   }
   .thumbnail {
     width: 80px;
+    height: 80px;
   }
 }
 /* lg */
 @media (min-width: 1200px) {
   .logo {
     width: 50px;
+    height: 50px;
   }
   .thumbnail {
     width: 100px;
+    height: 100px;
   }
 }
 

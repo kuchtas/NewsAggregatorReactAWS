@@ -21,7 +21,11 @@ const Body = () => {
           "X-Api-Key": process.env.REACT_APP_API_KEY,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ searchString: searchString }),
+        body: JSON.stringify({
+          searchString: searchString // getting rid of polish characters - they result in errors on sites and are ignored when searching anyway
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, ""),
+        }),
       }
     )
       .then((resp) => resp.json())

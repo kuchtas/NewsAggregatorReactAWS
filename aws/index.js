@@ -56,9 +56,12 @@ const getWPROST = async (word) => {
     for (let i = 1; i < 10; i++) {
       const title = $(`#section-list-2 > li:nth-child(${i}) > a.title`).text();
 
-      const link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
+      let link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
         "href"
       );
+      if (link.substr(0, 4) !== "http") {
+        link = `https://www.wprost.pl` + link;
+      }
 
       let thumbnail = "";
       if (
@@ -82,9 +85,10 @@ const getWPROST = async (word) => {
     for (let i = 1; i < 22; i++) {
       const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
 
-      const link = $(`#section-list > li:nth-child(${i}) > a.title`).attr(
-        "href"
-      );
+      let link = $(`#section-list > li:nth-child(${i}) > a.title`).attr("href");
+      if (link.substr(0, 4) !== "http") {
+        link = `https://www.wprost.pl` + link;
+      }
 
       let thumbnail = "";
       if (

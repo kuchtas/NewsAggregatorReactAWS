@@ -20,9 +20,10 @@ const getOKO = async (word) => {
       const postID = $(this).attr("id");
       const link = $(`#${postID} > div > div > a.img`).attr("href");
       const title = $(`#${postID} > div > div > h2 > a`).text();
-      const thumbnail = $(`#${postID} > div > div > a.img > img`).attr(
+      let thumbnail = $(`#${postID} > div > div > a.img > img`).attr(
         "data-src"
       );
+      if (typeof thumbnail === "undefined") thumbnail = "";
       articles.push({
         site: "OKO",
         titleAndLink: { title, link },
@@ -32,7 +33,9 @@ const getOKO = async (word) => {
   } catch (error) {
     console.log(error);
   }
+  console.log(articles);
   return articles;
 };
 
+getOKO("wybory prezydenckie");
 exports.getOKO = getOKO;

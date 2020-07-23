@@ -4,6 +4,8 @@ const cheerio = require("cheerio");
 
 exports.handler = async (event) => {
   let body;
+  let wprostArticles;
+  let dziennikArticles;
   let statusCode = "200";
   const headers = {
     "Content-Type": "application/json",
@@ -14,7 +16,11 @@ exports.handler = async (event) => {
   try {
     if (event.httpMethod === "POST") {
       const data = JSON.parse(event.body);
-      body = await getWPROST(data.searchString);
+      body = [];
+      wprostArticles = await getWPROST(data.searchString);
+      dzienikArticles = await getDZIENNIK(data.searchString);
+      Array.prototype.push.apply(body, wprostArticles);
+      Array.prototype.push.apply(body, dzienikArticles);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);
     }
@@ -100,6 +106,37 @@ const getWPROST = async (word) => {
     }
   } catch (error) {
     console.log(error);
+  }
+  return articles;
+};
+
+const getDZIENNIK = async (word) => {
+  const articles = [];
+
+  const $ = await fetchHTML(
+    `https://www.dziennik.pl/szukaj?c=1&b=1&o=1&s=0&search_term=&q=${word}`
+  );
+
+  for (let i = 1; i < 28; i++) {
+    if (i % 11 === 0) continue;
+
+    const title = $(
+      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
+    ).text();
+
+    const link = $(
+      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
+    ).attr("href");
+
+    const thumbnail = $(
+      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
+    ).attr("src");
+
+    articles.push({
+      site: "DZIENNIK",
+      titleAndLink: { title, link },
+      thumbnail,
+    });
   }
   return articles;
 };

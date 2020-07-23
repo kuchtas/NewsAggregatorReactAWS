@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Col, Row } from "reactstrap";
 import wprostLogo from "../logos/wprost-favicon-512x512.png";
 import dziennikLogo from "../logos/dziennik.jpg";
+import okoLogo from "../logos/oko.jpg";
 import missingPicture from "../logos/icons8-unavailable-120.png";
 import "../styles/articleStyles.css";
 
@@ -12,6 +13,8 @@ const Article = ({ site, title, link, thumbnail }) => {
         return wprostLogo;
       case "DZIENNIK":
         return dziennikLogo;
+      case "OKO":
+        return okoLogo;
       default:
         return missingPicture;
     }

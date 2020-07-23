@@ -6,6 +6,7 @@ exports.handler = async (event) => {
   let body;
   let wprostArticles;
   let dziennikArticles;
+  let okoArticles;
   let statusCode = "200";
   const headers = {
     "Content-Type": "application/json",
@@ -19,8 +20,10 @@ exports.handler = async (event) => {
       body = [];
       wprostArticles = await getWPROST(data.searchString);
       dzienikArticles = await getDZIENNIK(data.searchString);
+      okoArticles = await getOKO(data.searchString);
       Array.prototype.push.apply(body, wprostArticles);
       Array.prototype.push.apply(body, dzienikArticles);
+      Array.prototype.push.apply(body, okoArticles);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);
     }
@@ -141,6 +144,35 @@ const getDZIENNIK = async (word) => {
       titleAndLink: { title, link },
       thumbnail,
     });
+  }
+  return articles;
+};
+
+const getOKO = async (word) => {
+  const articles = [];
+
+  const $ = await fetchHTML(`https://oko.press/?s=${word}`);
+
+  $.prototype.exists = function (selector) {
+    return this.find(selector).length > 0;
+  };
+
+  try {
+    $(".post").each(function () {
+      const postID = $(this).attr("id");
+      const link = $(`#${postID} > div > div > a.img`).attr("href");
+      const title = $(`#${postID} > div > div > h2 > a`).text();
+      const thumbnail = $(`#${postID} > div > div > a.img > img`).attr(
+        "data-src"
+      );
+      articles.push({
+        site: "OKO",
+        titleAndLink: { title, link },
+        thumbnail,
+      });
+    });
+  } catch (error) {
+    console.log(error);
   }
   return articles;
 };

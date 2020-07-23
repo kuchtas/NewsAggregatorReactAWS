@@ -24,18 +24,19 @@ const getOKO = async (word) => {
         "data-src"
       );
       if (typeof thumbnail === "undefined") thumbnail = "";
-      articles.push({
-        site: "OKO",
-        titleAndLink: { title, link },
-        thumbnail,
-      });
+
+      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+        articles.push({
+          site: "OKO",
+          titleAndLink: { title, link },
+          thumbnail,
+        });
+      }
     });
   } catch (error) {
     console.log(error);
   }
-  console.log(articles);
   return articles;
 };
 
-getOKO("wybory prezydenckie");
 exports.getOKO = getOKO;

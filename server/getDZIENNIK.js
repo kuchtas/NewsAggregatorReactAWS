@@ -28,11 +28,13 @@ const getDZIENNIK = async (word) => {
       `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
     ).attr("src");
 
-    articles.push({
-      site: "DZIENNIK",
-      titleAndLink: { title, link },
-      thumbnail,
-    });
+    if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+      articles.push({
+        site: "DZIENNIK",
+        titleAndLink: { title, link },
+        thumbnail,
+      });
+    }
   }
   return articles;
 };

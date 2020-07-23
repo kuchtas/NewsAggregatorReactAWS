@@ -148,11 +148,13 @@ const getDZIENNIK = async (word) => {
       `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
     ).attr("src");
 
-    articles.push({
-      site: "DZIENNIK",
-      titleAndLink: { title, link },
-      thumbnail,
-    });
+    if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+      articles.push({
+        site: "DZIENNIK",
+        titleAndLink: { title, link },
+        thumbnail,
+      });
+    }
   }
   return articles;
 };
@@ -175,11 +177,13 @@ const getOKO = async (word) => {
         "data-src"
       );
       if (typeof thumbnail === "undefined") thumbnail = "";
-      articles.push({
-        site: "OKO",
-        titleAndLink: { title, link },
-        thumbnail,
-      });
+      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+        articles.push({
+          site: "OKO",
+          titleAndLink: { title, link },
+          thumbnail,
+        });
+      }
     });
   } catch (error) {
     console.log(error);

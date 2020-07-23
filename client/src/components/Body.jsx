@@ -24,7 +24,8 @@ const Body = () => {
         body: JSON.stringify({
           searchString: searchString // getting rid of polish characters - they result in errors on sites and are ignored when searching anyway
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, ""),
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\u0142/g, "l"),
         }),
       }
     )

@@ -60,173 +60,194 @@ function shuffle(array) {
 const getWPROST = async (word) => {
   const articles = [];
 
-  const $ = await fetchHTML(`https://www.wprost.pl/wyszukaj/${word}`);
-
-  $.prototype.exists = function (selector) {
-    return this.find(selector).length > 0;
-  };
-
   try {
-    for (let i = 1; i < 10; i++) {
-      const title = $(`#section-list-2 > li:nth-child(${i}) > a.title`).text();
+    const $ = await fetchHTML(`https://www.wprost.pl/wyszukaj/${word}`);
 
-      let link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
-        "href"
-      );
-      if (link.substr(0, 4) !== "http") {
-        link = `https://www.wprost.pl` + link;
+    $.prototype.exists = function (selector) {
+      return this.find(selector).length > 0;
+    };
+
+    try {
+      for (let i = 1; i < 10; i++) {
+        const title = $(
+          `#section-list-2 > li:nth-child(${i}) > a.title`
+        ).text();
+
+        let link = $(`#section-list-2 > li:nth-child(${i}) > a.title`).attr(
+          "href"
+        );
+        if (link.substr(0, 4) !== "http") {
+          link = `https://www.wprost.pl` + link;
+        }
+
+        let thumbnail = "";
+        if (
+          $(`#section-list-2 > li:nth-child(${i}) > a.image`).hasClass(
+            "image-th"
+          )
+        ) {
+          thumbnail = $(
+            `#section-list-2 > li:nth-child(${i}) > a.image.image-th`
+          )
+            .css("background-image")
+            .replace(`url(`, `https://www.wprost.pl/`)
+            .slice(0, -1);
+        }
+
+        if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+          articles.push({
+            site: "WPROST",
+            titleAndLink: { title, link },
+            thumbnail,
+          });
+        }
       }
 
-      let thumbnail = "";
-      if (
-        $(`#section-list-2 > li:nth-child(${i}) > a.image`).hasClass("image-th")
-      ) {
-        thumbnail = $(`#section-list-2 > li:nth-child(${i}) > a.image.image-th`)
-          .css("background-image")
-          .replace(`url(`, `https://www.wprost.pl/`)
-          .slice(0, -1);
-      }
+      for (let i = 1; i < 22; i++) {
+        const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
 
-      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
-        articles.push({
-          site: "WPROST",
-          titleAndLink: { title, link },
-          thumbnail,
-        });
+        let link = $(`#section-list > li:nth-child(${i}) > a.title`).attr(
+          "href"
+        );
+        if (link.substr(0, 4) !== "http") {
+          link = `https://www.wprost.pl` + link;
+        }
+
+        let thumbnail = "";
+        if (
+          $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
+        ) {
+          thumbnail = $(`#section-list > li:nth-child(${i}) > a.image.image-th`)
+            .css("background-image")
+            .replace(`url(`, `https://www.wprost.pl/`)
+            .slice(0, -1);
+        }
+
+        if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+          articles.push({
+            site: "WPROST",
+            titleAndLink: { title, link },
+            thumbnail,
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
-
-    for (let i = 1; i < 22; i++) {
-      const title = $(`#section-list > li:nth-child(${i}) > a.title`).text();
-
-      let link = $(`#section-list > li:nth-child(${i}) > a.title`).attr("href");
-      if (link.substr(0, 4) !== "http") {
-        link = `https://www.wprost.pl` + link;
-      }
-
-      let thumbnail = "";
-      if (
-        $(`#section-list > li:nth-child(${i}) > a.image`).hasClass("image-th")
-      ) {
-        thumbnail = $(`#section-list > li:nth-child(${i}) > a.image.image-th`)
-          .css("background-image")
-          .replace(`url(`, `https://www.wprost.pl/`)
-          .slice(0, -1);
-      }
-
-      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
-        articles.push({
-          site: "WPROST",
-          titleAndLink: { title, link },
-          thumbnail,
-        });
-      }
-    }
+    return articles;
   } catch (error) {
-    console.log(error);
+    console.log(`Error connecting with wprost.pl: ${error}`);
   }
-  return articles;
 };
 
 const getDZIENNIK = async (word) => {
   const articles = [];
+  try {
+    const $ = await fetchHTML(
+      `https://www.dziennik.pl/szukaj?c=1&b=1&o=1&s=0&search_term=&q=${word}`
+    );
 
-  const $ = await fetchHTML(
-    `https://www.dziennik.pl/szukaj?c=1&b=1&o=1&s=0&search_term=&q=${word}`
-  );
+    for (let i = 1; i < 28; i++) {
+      if (i % 11 === 0) continue;
 
-  for (let i = 1; i < 28; i++) {
-    if (i % 11 === 0) continue;
+      const title = $(
+        `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
+      ).text();
 
-    const title = $(
-      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
-    ).text();
+      const link = $(
+        `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
+      ).attr("href");
 
-    const link = $(
-      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > h4 > a`
-    ).attr("href");
+      const thumbnail = $(
+        `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
+      ).attr("src");
 
-    const thumbnail = $(
-      `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
-    ).attr("src");
-
-    if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
-      articles.push({
-        site: "DZIENNIK",
-        titleAndLink: { title, link },
-        thumbnail,
-      });
+      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+        articles.push({
+          site: "DZIENNIK",
+          titleAndLink: { title, link },
+          thumbnail,
+        });
+      }
     }
+    return articles;
+  } catch (error) {
+    console.log(`Error connecting with dziennik.pl: ${error}`);
   }
-  return articles;
 };
 
 const getOKO = async (word) => {
   const articles = [];
-
-  const $ = await fetchHTML(`https://oko.press/?s=${word}`);
-
-  $.prototype.exists = function (selector) {
-    return this.find(selector).length > 0;
-  };
-
   try {
-    $(".post").each(function () {
-      const postID = $(this).attr("id");
-      const link = $(`#${postID} > div > div > a.img`).attr("href");
-      const title = $(`#${postID} > div > div > h2 > a`).text();
-      let thumbnail = $(`#${postID} > div > div > a.img > img`).attr(
-        "data-src"
-      );
-      if (typeof thumbnail === "undefined") thumbnail = "";
-      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
-        articles.push({
-          site: "OKO",
-          titleAndLink: { title, link },
-          thumbnail,
-        });
-      }
-    });
+    const $ = await fetchHTML(`https://oko.press/?s=${word}`);
+
+    $.prototype.exists = function (selector) {
+      return this.find(selector).length > 0;
+    };
+
+    try {
+      $(".post").each(function () {
+        const postID = $(this).attr("id");
+        const link = $(`#${postID} > div > div > a.img`).attr("href");
+        const title = $(`#${postID} > div > div > h2 > a`).text();
+        let thumbnail = $(`#${postID} > div > div > a.img > img`).attr(
+          "data-src"
+        );
+        if (typeof thumbnail === "undefined") thumbnail = "";
+        if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+          articles.push({
+            site: "OKO",
+            titleAndLink: { title, link },
+            thumbnail,
+          });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    return articles;
   } catch (error) {
-    console.log(error);
+    console.log(`Error connecting with oko.press: ${error}`);
   }
-  return articles;
 };
 
 const getNIEZALEZNA = async (word) => {
   const articles = [];
-
-  const $ = await fetchHTML(`https://niezalezna.pl/wyszukiwarka?s=${word}`);
-
-  $.prototype.exists = function (selector) {
-    return this.find(selector).length > 0;
-  };
-
   try {
-    for (let i = 1; i < 21; i++) {
-      const link =
-        `https://niezalezna.pl/` +
-        $(
-          `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a`
-        ).attr("href");
-      const title = $(
-        `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > div > div.articleHorizontalTitleMiddle`
-      ).text();
-      let thumbnail = $(
-        `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > img`
-      ).attr("src");
-      if (typeof thumbnail === "undefined") thumbnail = "";
+    const $ = await fetchHTML(`https://niezalezna.pl/wyszukiwarka?s=${word}`);
 
-      if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
-        articles.push({
-          site: "NIEZALEZNA",
-          titleAndLink: { title, link },
-          thumbnail,
-        });
+    $.prototype.exists = function (selector) {
+      return this.find(selector).length > 0;
+    };
+
+    try {
+      for (let i = 1; i < 21; i++) {
+        const link =
+          `https://niezalezna.pl/` +
+          $(
+            `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a`
+          ).attr("href");
+        const title = $(
+          `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > div > div.articleHorizontalTitleMiddle`
+        ).text();
+        let thumbnail = $(
+          `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > img`
+        ).attr("src");
+        if (typeof thumbnail === "undefined") thumbnail = "";
+
+        if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
+          articles.push({
+            site: "NIEZALEZNA",
+            titleAndLink: { title, link },
+            thumbnail,
+          });
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
+    return articles;
   } catch (error) {
-    console.log(error);
+    console.log(`Error connecting with niezalezna.pl: ${error}`);
   }
-  return articles;
 };

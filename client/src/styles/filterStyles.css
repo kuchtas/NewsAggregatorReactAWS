@@ -1,0 +1,27 @@
+/* xs */
+.filter {
+  width: 30px;
+  height: 30px;
+}
+
+/* sm */
+@media (min-width: 768px) {
+  .filter {
+    width: 30px;
+    height: 30px;
+  }
+}
+/* md */
+@media (min-width: 992px) {
+  .filter {
+    width: 40px;
+    height: 40px;
+  }
+}
+/* lg */
+@media (min-width: 1200px) {
+  .filter {
+    width: 50px;
+    height: 50px;
+  }
+}

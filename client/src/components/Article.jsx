@@ -7,7 +7,10 @@ import niezaleznaLogo from "../logos/niezalezna.jpg";
 import missingPicture from "../logos/icons8-unavailable-120.png";
 import "../styles/articleStyles.css";
 
-const Article = ({ site, title, link, thumbnail }) => {
+const Article = ({ site, title, link, thumbnail, display }) => {
+  const getClasses = () => {
+    return display ? "article mt-3 border rounded" : "d-none";
+  };
   const getLogo = (site) => {
     switch (site) {
       case "WPROST":
@@ -24,10 +27,7 @@ const Article = ({ site, title, link, thumbnail }) => {
   };
 
   return (
-    <Container
-      className="article mt-3 border rounded "
-      style={{ position: "relative" }}
-    >
+    <Container className={getClasses()} style={{ position: "relative" }}>
       <Row className="align-items-center">
         <Col xs="0" className="text-left">
           <img

@@ -2,9 +2,16 @@ import React, { useState, useEffect } from "react";
 import Search from "./Search";
 import News from "./News";
 import ErrorEmpty from "./ErrorEmpty";
+import Filter from "./Filter";
 import { Container, Spinner } from "reactstrap";
 
 const Body = () => {
+  const [filterState, setFilterState] = useState({
+    WPROST: true,
+    DZIENNIK: true,
+    OKO: true,
+    NIEZALEZNA: true,
+  });
   const [loading, setLoading] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [articles, setArticles] = useState([]);
@@ -51,8 +58,14 @@ const Body = () => {
     }
   };
 
-  const handleChange = (event) => {
+  const handleSearchChange = (event) => {
     setSearchString(event.target.value);
+  };
+
+  const handleFilterChange = (event) => {
+    const newFilterState = { ...filterState };
+    newFilterState[event.target.id] = !newFilterState[event.target.id];
+    setFilterState(newFilterState);
   };
 
   const getSpinnerClass = () => {
@@ -66,10 +79,11 @@ const Body = () => {
 
   return (
     <Container className="text-center">
-      <Search onSubmit={handleSubmit} onChange={handleChange} />
+      <Search onSubmit={handleSubmit} onChange={handleSearchChange} />
+      <Filter filterState={filterState} onChange={handleFilterChange} />
       <Spinner color="primary" className={getSpinnerClass()} />
       <ErrorEmpty isVisible={alertVisible} />
-      <News articles={articles} />
+      <News articles={articles} filterState={filterState} />
     </Container>
   );
 };

@@ -3,6 +3,7 @@ import Search from "./Search";
 import News from "./News";
 import ErrorEmpty from "./ErrorEmpty";
 import Filter from "./Filter";
+import Sort from "./Sort";
 import { Container, Spinner } from "reactstrap";
 
 const Body = () => {
@@ -77,13 +78,22 @@ const Body = () => {
       setAlertVisible(true);
   }, [articles.length, loading, alreadySearched]);
 
+  const changeArticlesOrder = () => {
+    const articlesRev = [...articles].reverse();
+    setArticles(articlesRev);
+  };
   return (
     <Container className="text-center">
       <Search onSubmit={handleSubmit} onChange={handleSearchChange} />
       <Filter filterState={filterState} onChange={handleFilterChange} />
+      <Sort onClick={changeArticlesOrder} />
       <Spinner color="primary" className={getSpinnerClass()} />
       <ErrorEmpty isVisible={alertVisible} />
-      <News articles={articles} filterState={filterState} />
+      <News
+        articles={articles}
+        filterState={filterState}
+        onClick={changeArticlesOrder}
+      />
     </Container>
   );
 };

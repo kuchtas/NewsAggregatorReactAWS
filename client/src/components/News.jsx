@@ -8,9 +8,9 @@ const News = ({ articles, filterState }) => {
 
   return (
     <div>
-      {articles.map((article, index) => (
+      {articles.map((article) => (
         <Article
-          key={index}
+          key={article.id}
           site={article.site}
           title={article.titleAndLink.title}
           link={article.titleAndLink.link}

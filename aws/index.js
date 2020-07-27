@@ -26,6 +26,7 @@ exports.handler = async (event) => {
       Array.prototype.push.apply(body, dzienikArticles);
       Array.prototype.push.apply(body, okoArticles);
       Array.prototype.push.apply(body, niezaleznaArticles);
+      body.forEach((item, i) => (item.id = i + 1));
       shuffle(body);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);

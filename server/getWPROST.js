@@ -36,11 +36,18 @@ const getWPROST = async (word) => {
           .slice(0, -1);
       }
 
+      const dateString = $(
+        `#section-list-2 > li:nth-child(${i}) > span.lead > span`
+      ).attr("title");
+
+      const date = new Date(dateString);
+
       if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
         articles.push({
           site: "WPROST",
           titleAndLink: { title, link },
           thumbnail,
+          date,
         });
       }
     }
@@ -63,18 +70,26 @@ const getWPROST = async (word) => {
           .slice(0, -1);
       }
 
+      const dateString = $(
+        `#section-list > li:nth-child(${i}) > span.lead > span`
+      ).attr("title");
+
+      const date = new Date(dateString);
+
       if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
         articles.push({
           site: "WPROST",
           titleAndLink: { title, link },
           thumbnail,
+          date,
         });
       }
     }
   } catch (error) {
     console.log(error);
   }
+  console.log(articles);
   return articles;
 };
-
+getWPROST("wybory");
 exports.getWPROST = getWPROST;

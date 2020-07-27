@@ -88,8 +88,6 @@ const getWPROST = async (word) => {
   } catch (error) {
     console.log(error);
   }
-  console.log(articles);
   return articles;
 };
-getWPROST("wybory");
 exports.getWPROST = getWPROST;

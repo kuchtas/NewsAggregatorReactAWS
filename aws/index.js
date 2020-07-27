@@ -44,6 +44,76 @@ exports.handler = async (event) => {
   };
 };
 
+const polishMonthsObject = {
+  sty: "january",
+  styczen: "january",
+  stycznia: "january",
+  lut: "february",
+  luty: "february",
+  lutego: "february",
+  mar: "march",
+  marzec: "march",
+  marca: "march",
+  kwi: "april",
+  kwiecien: "april",
+  kwietnia: "april",
+  maj: "may",
+  maj: "may",
+  maja: "may",
+  cze: "june",
+  czerwiec: "june",
+  czerwca: "june",
+  lip: "july",
+  lipiec: "july",
+  lipca: "july",
+  sie: "august",
+  sierpien: "august",
+  sierpnia: "august",
+  wrz: "september",
+  wrzesien: "september",
+  wrzesnia: "september",
+  paz: "october",
+  pazdziernik: "october",
+  pazdziernika: "october",
+  lis: "november",
+  listopad: "november",
+  listopada: "november",
+  gru: "december",
+  grudzien: "december",
+  grudnia: "december",
+};
+
+parseDate = (dateString) => {
+  switch (dateString) {
+    case "dzisiaj":
+      const today = new Date();
+      return today;
+
+    case "wczoraj":
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.toDateString();
+      return yesterday;
+
+    default:
+      const dateWithoutDiacritics = dateString
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\u0142/g, "l");
+
+      const regex = /[a-zA-Z]+/g;
+      const month = dateWithoutDiacritics.match(regex);
+      const dateEnglish = dateWithoutDiacritics.replace(
+        month,
+        polishMonthsObject[month]
+      );
+      const date = new Date(dateEnglish);
+      date.setDate(date.getDate() + 1); // days are counted starting from 0 to 30 in Date() so we need to add one day
+      date.toDateString();
+      return date;
+  }
+};
+
 async function fetchHTML(url) {
   const { data } = await axios.get(url);
   return cheerio.load(data);
@@ -54,6 +124,12 @@ function shuffle(array) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
+
+  array.sort(function (a, b) {
+    // Turn your strings into dates, and then subtract them
+    // to get a value that is either negative, positive, or zero.
+    return new Date(b.date) - new Date(a.date);
+  });
   return array;
 }
 
@@ -93,12 +169,18 @@ const getWPROST = async (word) => {
             .replace(`url(`, `https://www.wprost.pl/`)
             .slice(0, -1);
         }
+        const dateString = $(
+          `#section-list-2 > li:nth-child(${i}) > span.lead > span`
+        ).attr("title");
+
+        const date = new Date(dateString);
 
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "WPROST",
             titleAndLink: { title, link },
             thumbnail,
+            date,
           });
         }
       }
@@ -123,11 +205,18 @@ const getWPROST = async (word) => {
             .slice(0, -1);
         }
 
+        const dateString = $(
+          `#section-list > li:nth-child(${i}) > span.lead > span`
+        ).attr("title");
+
+        const date = new Date(dateString);
+
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "WPROST",
             titleAndLink: { title, link },
             thumbnail,
+            date,
           });
         }
       }
@@ -162,11 +251,18 @@ const getDZIENNIK = async (word) => {
         `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > a > img`
       ).attr("src");
 
+      const dateString = $(
+        `#doc > div.pageContent.pageWrapper > section > div > section > div.resultList > ul > li:nth-child(${i}) > div > div > span`
+      ).text();
+
+      const date = parseDate(dateString);
+
       if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
         articles.push({
           site: "DZIENNIK",
           titleAndLink: { title, link },
           thumbnail,
+          date,
         });
       }
     }
@@ -194,11 +290,15 @@ const getOKO = async (word) => {
           "data-src"
         );
         if (typeof thumbnail === "undefined") thumbnail = "";
+        const dateString = $(`#${postID} > div > div > time`).text();
+        const date = parseDate(dateString);
+
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "OKO",
             titleAndLink: { title, link },
             thumbnail,
+            date,
           });
         }
       });
@@ -235,11 +335,21 @@ const getNIEZALEZNA = async (word) => {
         ).attr("src");
         if (typeof thumbnail === "undefined") thumbnail = "";
 
+        const dateString = $(
+          `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > div > div.articleHorizontalDate`
+        ).text();
+
+        const year = parseInt(dateString.slice(-4));
+        const month = parseInt(dateString.slice(-7, -5)) - 1;
+        const day = parseInt(dateString.slice(-10, -8)) + 1;
+        const date = new Date(year, month, day);
+
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "NIEZALEZNA",
             titleAndLink: { title, link },
             thumbnail,
+            date,
           });
         }
       }

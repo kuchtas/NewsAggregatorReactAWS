@@ -7,7 +7,7 @@ import niezaleznaLogo from "../logos/niezalezna.jpg";
 import missingPicture from "../logos/icons8-unavailable-120.png";
 import "../styles/articleStyles.css";
 
-const Article = ({ site, title, link, thumbnail, display }) => {
+const Article = ({ site, title, link, thumbnail, date, display }) => {
   const getClasses = () => {
     return display ? "article mt-3 border rounded" : "d-none";
   };

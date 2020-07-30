@@ -27,8 +27,23 @@ exports.handler = async (event) => {
   const okoLambdaResult = await new AWS.Lambda().invoke(params).promise();
   const okoArticles = JSON.parse(JSON.parse(okoLambdaResult.Payload)).body;
 
-  allArticles = [...wprostArticles, ...dziennikArticles, ...okoArticles];
+  params.FunctionName =
+    "arn:aws:lambda:eu-central-1:286935822615:function:wyszukiwarka-child-niezalezna";
+  const niezaleznaLambdaResult = await new AWS.Lambda()
+    .invoke(params)
+    .promise();
+  const niezaleznaArticles = JSON.parse(
+    JSON.parse(niezaleznaLambdaResult.Payload)
+  ).body;
+
+  allArticles = [
+    ...wprostArticles,
+    ...dziennikArticles,
+    ...okoArticles,
+    ...niezaleznaArticles,
+  ];
   shuffle(allArticles);
+
   return allArticles;
 };
 

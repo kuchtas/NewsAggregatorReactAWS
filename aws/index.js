@@ -84,7 +84,7 @@ const polishMonthsObject = {
   grudnia: "december",
 };
 
-parseDate = (dateString) => {
+const parseDate = (dateString) => {
   switch (dateString) {
     case "dzisiaj":
       const today = new Date();

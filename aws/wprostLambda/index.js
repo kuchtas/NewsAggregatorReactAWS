@@ -98,7 +98,8 @@ const getWPROST = async (word) => {
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "WPROST",
-            titleAndLink: { title, link },
+            title,
+            link,
             thumbnail,
             date,
           });

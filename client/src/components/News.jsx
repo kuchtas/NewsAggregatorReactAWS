@@ -12,8 +12,8 @@ const News = ({ articles, filterState }) => {
         <Article
           key={article.id}
           site={article.site}
-          title={article.titleAndLink.title}
-          link={article.titleAndLink.link}
+          title={article.title}
+          link={article.link}
           thumbnail={article.thumbnail}
           date={article.date}
           display={isChosen(article.site)}

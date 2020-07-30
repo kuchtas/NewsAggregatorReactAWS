@@ -26,7 +26,7 @@ const Body = () => {
     setAlreadySearched(true);
 
     fetch(
-      `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews`,
+      `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/wyszukiwarka-parent`,
       {
         method: "POST",
         withCredentials: true,

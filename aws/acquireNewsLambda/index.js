@@ -1,12 +1,8 @@
-const AWS = require("aws-sdk");
 const axios = require("axios");
 const cheerio = require("cheerio");
 
 exports.handler = async (event) => {
   let body;
-  let wprostArticles;
-  let dziennikArticles;
-  let okoArticles;
   let statusCode = "200";
   const headers = {
     "Content-Type": "application/json",
@@ -18,10 +14,10 @@ exports.handler = async (event) => {
     if (event.httpMethod === "POST") {
       const data = JSON.parse(event.body);
       body = [];
-      wprostArticles = await getWPROST(data.searchString);
-      dzienikArticles = await getDZIENNIK(data.searchString);
-      okoArticles = await getOKO(data.searchString);
-      niezaleznaArticles = await getNIEZALEZNA(data.searchString);
+      const wprostArticles = await getWPROST(data.searchString);
+      const dzienikArticles = await getDZIENNIK(data.searchString);
+      const okoArticles = await getOKO(data.searchString);
+      const niezaleznaArticles = await getNIEZALEZNA(data.searchString);
       Array.prototype.push.apply(body, wprostArticles);
       Array.prototype.push.apply(body, dzienikArticles);
       Array.prototype.push.apply(body, okoArticles);
@@ -58,7 +54,6 @@ const polishMonthsObject = {
   kwi: "april",
   kwiecien: "april",
   kwietnia: "april",
-  maj: "may",
   maj: "may",
   maja: "may",
   cze: "june",
@@ -152,7 +147,7 @@ const getWPROST = async (word) => {
           "href"
         );
         if (link.substr(0, 4) !== "http") {
-          link = `https://www.wprost.pl` + link;
+          link = `https://www.wprost.pl${link}`;
         }
 
         let thumbnail = "";
@@ -177,7 +172,8 @@ const getWPROST = async (word) => {
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "WPROST",
-            titleAndLink: { title, link },
+            title,
+            link,
             thumbnail,
             date,
           });
@@ -191,7 +187,7 @@ const getWPROST = async (word) => {
           "href"
         );
         if (link.substr(0, 4) !== "http") {
-          link = `https://www.wprost.pl` + link;
+          link = `https://www.wprost.pl${link}`;
         }
 
         let thumbnail = "";
@@ -213,7 +209,8 @@ const getWPROST = async (word) => {
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "WPROST",
-            titleAndLink: { title, link },
+            title,
+            link,
             thumbnail,
             date,
           });
@@ -259,7 +256,8 @@ const getDZIENNIK = async (word) => {
       if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
         articles.push({
           site: "DZIENNIK",
-          titleAndLink: { title, link },
+          title,
+          link,
           thumbnail,
           date,
         });
@@ -295,7 +293,8 @@ const getOKO = async (word) => {
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "OKO",
-            titleAndLink: { title, link },
+            title,
+            link,
             thumbnail,
             date,
           });
@@ -346,7 +345,8 @@ const getNIEZALEZNA = async (word) => {
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
           articles.push({
             site: "NIEZALEZNA",
-            titleAndLink: { title, link },
+            title,
+            link,
             thumbnail,
             date,
           });

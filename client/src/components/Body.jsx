@@ -86,8 +86,11 @@ const Body = () => {
     <Container className="text-center">
       <Search onSubmit={handleSubmit} onChange={handleSearchChange} />
       <Filter filterState={filterState} onChange={handleFilterChange} />
-      <Sort onClick={changeArticlesOrder} />
-      <Spinner color="primary" className={getSpinnerClass()} />
+      {loading ? (
+        <Spinner color="primary" className={getSpinnerClass()} />
+      ) : (
+        <Sort onClick={changeArticlesOrder} />
+      )}
       <ErrorEmpty isVisible={alertVisible} />
       <News
         articles={articles}

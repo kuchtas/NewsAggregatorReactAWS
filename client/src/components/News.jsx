@@ -1,5 +1,6 @@
 import React from "react";
 import Article from "./Article";
+import FlipMove from "react-flip-move";
 
 const News = ({ articles, filterState }) => {
   const isChosen = (site) => {
@@ -7,7 +8,10 @@ const News = ({ articles, filterState }) => {
   };
 
   return (
-    <div>
+    <FlipMove
+      enterAnimation="accordionVertical"
+      appearAnimation="accordionVertical"
+    >
       {articles.map((article) => (
         <Article
           key={article.id}
@@ -19,7 +23,7 @@ const News = ({ articles, filterState }) => {
           display={isChosen(article.site)}
         />
       ))}
-    </div>
+    </FlipMove>
   );
 };
 

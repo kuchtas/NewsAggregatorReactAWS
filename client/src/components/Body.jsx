@@ -74,8 +74,14 @@ const Body = () => {
   };
 
   useEffect(() => {
-    if (loading === false && articles.length === 0 && alreadySearched === true)
+    if (
+      loading === false &&
+      articles.length === 0 &&
+      alreadySearched === true
+    ) {
       setAlertVisible(true);
+      setAlreadySearched(false);
+    }
   }, [articles.length, loading, alreadySearched]);
 
   const changeArticlesOrder = () => {
@@ -86,11 +92,12 @@ const Body = () => {
     <Container className="text-center">
       <Search onSubmit={handleSubmit} onChange={handleSearchChange} />
       <Filter filterState={filterState} onChange={handleFilterChange} />
-      {loading ? (
+      {loading ? ( //display nothing if before first search and not loading, spinner when loading, sorting when not loading but past first search
         <Spinner color="primary" className={getSpinnerClass()} />
-      ) : (
+      ) : alreadySearched ? (
         <Sort onClick={changeArticlesOrder} />
-      )}
+      ) : null}
+
       <ErrorEmpty isVisible={alertVisible} />
       <News
         articles={articles}

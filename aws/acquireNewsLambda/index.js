@@ -2,7 +2,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 
 exports.handler = async (event) => {
-  let body;
+  let body = [];
   let statusCode = "200";
   const headers = {
     "Content-Type": "application/json",
@@ -13,16 +13,18 @@ exports.handler = async (event) => {
   try {
     if (event.httpMethod === "POST") {
       const data = JSON.parse(event.body);
-      body = [];
-      const wprostArticles = await getWPROST(data.searchString);
-      const dzienikArticles = await getDZIENNIK(data.searchString);
-      const okoArticles = await getOKO(data.searchString);
-      const niezaleznaArticles = await getNIEZALEZNA(data.searchString);
-      Array.prototype.push.apply(body, wprostArticles);
-      Array.prototype.push.apply(body, dzienikArticles);
-      Array.prototype.push.apply(body, okoArticles);
-      Array.prototype.push.apply(body, niezaleznaArticles);
-      body.forEach((item, i) => (item.id = i + 1));
+      const { searchString } = data;
+      const wprostArticles = await getWPROST(searchString);
+      const dzienikArticles = await getDZIENNIK(searchString);
+      const okoArticles = await getOKO(searchString);
+      const niezaleznaArticles = await getNIEZALEZNA(searchString);
+      body = [
+        ...wprostArticles,
+        ...dzienikArticles,
+        ...okoArticles,
+        ...niezaleznaArticles,
+      ];
+      body.forEach((article, i) => (article.id = i + 1));
       shuffle(body);
     } else {
       throw new Error(`Unsupported method "${event.httpMethod}"`);
@@ -42,39 +44,28 @@ exports.handler = async (event) => {
 };
 
 const polishMonthsObject = {
-  sty: "january",
   styczen: "january",
   stycznia: "january",
-  lut: "february",
   luty: "february",
   lutego: "february",
-  mar: "march",
   marzec: "march",
   marca: "march",
-  kwi: "april",
   kwiecien: "april",
   kwietnia: "april",
   maj: "may",
   maja: "may",
-  cze: "june",
   czerwiec: "june",
   czerwca: "june",
-  lip: "july",
   lipiec: "july",
   lipca: "july",
-  sie: "august",
   sierpien: "august",
   sierpnia: "august",
-  wrz: "september",
   wrzesien: "september",
   wrzesnia: "september",
-  paz: "october",
   pazdziernik: "october",
   pazdziernika: "october",
-  lis: "november",
   listopad: "november",
   listopada: "november",
-  gru: "december",
   grudzien: "december",
   grudnia: "december",
 };
@@ -122,7 +113,7 @@ function shuffle(array) {
   }
 
   array.sort(function (a, b) {
-    return new Date(b.date) - new Date(a.date);
+    return b.date - a.date;
   });
   return array;
 }
@@ -320,11 +311,9 @@ const getNIEZALEZNA = async (word) => {
 
     try {
       for (let i = 1; i < 21; i++) {
-        const link =
-          `https://niezalezna.pl/` +
-          $(
-            `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a`
-          ).attr("href");
+        const link = `https://niezalezna.pl/${$(
+          `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a`
+        ).attr("href")}`;
         const title = $(
           `#content > div.columnRightLarge > div > div > div:nth-child(${i}) > a > div > div.articleHorizontalTitleMiddle`
         ).text();

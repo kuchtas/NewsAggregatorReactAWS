@@ -10,7 +10,8 @@ const News = ({ articles, filterState }) => {
   return (
     <FlipMove
       enterAnimation="accordionVertical"
-      appearAnimation="accordionVertical"
+      leaveAnimation="accordionVertical"
+      staggerDurationBy={10}
     >
       {articles.map((article) => (
         <Article
@@ -20,7 +21,7 @@ const News = ({ articles, filterState }) => {
           link={article.link}
           thumbnail={article.thumbnail}
           date={article.date}
-          display={isChosen(article.site)}
+          isVisible={isChosen(article.site)}
         />
       ))}
     </FlipMove>

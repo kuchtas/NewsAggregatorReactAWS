@@ -8,9 +8,9 @@ import missingPicture from "../logos/icons8-unavailable-120.png";
 import "../styles/articleStyles.css";
 
 const Article = forwardRef(
-  ({ site, title, link, thumbnail, date, display }, ref) => {
+  ({ site, title, link, thumbnail, date, isVisible }, ref) => {
     const getClasses = () => {
-      return display ? "article mt-3 border rounded" : "d-none";
+      return isVisible ? "article mt-3 border rounded" : "collapse";
     };
     const getLogo = (site) => {
       switch (site) {

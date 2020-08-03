@@ -25,7 +25,7 @@ const Body = () => {
     setArticles([]);
     setAlreadySearched(true);
 
-    fetch(
+    await fetch(
       `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews`,
       {
         method: "POST",
@@ -35,10 +35,7 @@ const Body = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          searchString: searchString // getting rid of polish characters - they result in errors on sites and are ignored when searching anyway
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/\u0142/g, "l"),
+          searchString: searchString,
         }),
       }
     )
@@ -59,8 +56,17 @@ const Body = () => {
     }
   };
 
+  const makeSearchStringValid = (validSearchString) => {
+    return validSearchString
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/\u0142/g, "l")
+      .replace(/[^a-z0-9 ]+/gi, ""); // no diacritics and special symbols - leaving only letters, numbers and spaces
+  };
+
   const handleSearchChange = (event) => {
-    setSearchString(event.target.value);
+    const searchString = makeSearchStringValid(event.target.value); // no diacritics and special symbols - leaving only letters, numbers and spaces
+    setSearchString(searchString);
   };
 
   const handleFilterChange = (event) => {

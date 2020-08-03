@@ -8,7 +8,7 @@ import "../styles/filterStyles.css";
 
 const Filter = ({ filterState, onChange }) => {
   return (
-    <Container className=" mt-2 d-flex justify-content-around">
+    <Container className=" mt-3 d-flex justify-content-around">
       <FormGroup check inline>
         <Label check>
           <Input

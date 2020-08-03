@@ -10,7 +10,7 @@ import "../styles/articleStyles.css";
 const Article = forwardRef(
   ({ site, title, link, thumbnail, date, isVisible }, ref) => {
     const getClasses = () => {
-      return isVisible ? "article mt-3 border rounded" : "collapse";
+      return isVisible ? "article mt-3 border border-info rounded" : "d-none";
     };
     const getLogo = (site) => {
       switch (site) {

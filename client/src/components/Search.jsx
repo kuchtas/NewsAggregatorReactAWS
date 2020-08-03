@@ -9,7 +9,7 @@ const Search = ({ onSubmit, onChange }) => {
           type="search"
           placeholder="Podaj temat wiadomości..."
           onChange={onChange}
-          autofocus="true"
+          autoFocus={true}
         />
       </Form>
     </div>

@@ -10,17 +10,18 @@ const NewsHeader = ({
   handleClickSort,
 }) => {
   const getSpinnerClass = () => {
-    return loading ? "mt-5 d-inline-flex" : "d-none";
+    return loading && alreadySearched ? "mt-5 d-inline-flex" : "d-none";
   };
 
   return (
     <div>
-      {loading ? ( //display nothing if before first search and not loading, spinner when loading, sorting when not loading but past first search
-        <Spinner color="primary" className={getSpinnerClass()} />
-      ) : alreadySearched ? (
-        <Sort onClick={handleClickSort} />
-      ) : null}
-      <AlertNoArticlesFound isVisible={alertVisible} />
+      <Spinner color="primary" className={getSpinnerClass()} />
+      <Sort
+        onClick={handleClickSort}
+        loading={loading}
+        alreadySearched={alreadySearched}
+      />
+      <AlertNoArticlesFound alertVisible={alertVisible} />
     </div>
   );
 };

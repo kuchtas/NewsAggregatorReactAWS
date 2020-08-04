@@ -1,9 +1,9 @@
 import React from "react";
 import { Alert } from "reactstrap";
 
-const AlertNoArticlesFound = ({ isVisible }) => {
+const AlertNoArticlesFound = ({ alertVisible }) => {
   return (
-    <Alert color="danger" className="mt-3" isOpen={isVisible}>
+    <Alert color="danger" className="mt-3" isOpen={alertVisible}>
       Brak wyników
     </Alert>
   );

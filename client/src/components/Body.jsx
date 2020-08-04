@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Search from "./Search";
 import News from "./News";
-import ErrorEmpty from "./ErrorEmpty";
 import Filter from "./Filter";
-import Sort from "./Sort";
-import { Container, Spinner } from "reactstrap";
+import { Container } from "reactstrap";
+import NewsHeader from "./NewsHeader";
 
 const Body = () => {
   const [filterState, setFilterState] = useState({
@@ -53,6 +52,9 @@ const Body = () => {
     event.preventDefault();
     if (searchString.length !== 0) {
       sendSearchString();
+    } else {
+      setAlertVisible(true);
+      setArticles([]);
     }
   };
 
@@ -75,10 +77,6 @@ const Body = () => {
     setFilterState(newFilterState);
   };
 
-  const getSpinnerClass = () => {
-    return loading ? "mt-5 d-inline-flex" : "d-none";
-  };
-
   useEffect(() => {
     if (
       loading === false &&
@@ -94,17 +92,17 @@ const Body = () => {
     const articlesRev = [...articles].reverse();
     setArticles(articlesRev);
   };
+
   return (
     <Container className="text-center">
       <Search onSubmit={handleSubmit} onChange={handleSearchChange} />
       <Filter filterState={filterState} onChange={handleFilterChange} />
-      {loading ? ( //display nothing if before first search and not loading, spinner when loading, sorting when not loading but past first search
-        <Spinner color="primary" className={getSpinnerClass()} />
-      ) : alreadySearched ? (
-        <Sort onClick={changeArticlesOrder} />
-      ) : null}
-
-      <ErrorEmpty isVisible={alertVisible} />
+      <NewsHeader
+        loading={loading}
+        alreadySearched={alreadySearched}
+        alertVisible={alertVisible}
+        handleClickSort={changeArticlesOrder}
+      />
       <News
         articles={articles}
         filterState={filterState}

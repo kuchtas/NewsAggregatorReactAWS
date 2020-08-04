@@ -4,6 +4,7 @@ import News from "./News";
 import Filter from "./Filter";
 import { Container } from "reactstrap";
 import NewsHeader from "./NewsHeader";
+import axios from "axios";
 
 const Body = () => {
   const [filterState, setFilterState] = useState({
@@ -24,23 +25,20 @@ const Body = () => {
     setArticles([]);
     setAlreadySearched(true);
 
-    await fetch(
-      `https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews`,
-      {
-        method: "POST",
-        withCredentials: true,
-        headers: {
-          "X-Api-Key": process.env.REACT_APP_API_KEY,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          searchString: searchString,
-        }),
-      }
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        setArticles(data);
+    axios({
+      method: "post",
+      url:
+        "https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews",
+      data: {
+        searchString: searchString,
+      },
+      headers: {
+        "X-Api-Key": process.env.REACT_APP_API_KEY,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        setArticles(response.data);
         setLoading(false);
       })
       .catch((error) => {

@@ -33,8 +33,13 @@ const Body = () => {
         .replace(/\u0142/g, "l")
         .replace(/[^a-z0-9 ]+/gi, ""); // no diacritics and special symbols - leaving only letters, numbers and spaces
     };
+
     const validString = makeSearchStringValid(searchString);
-    setSearchString(validString);
+    const timeoutID = setTimeout(setSearchString(validString), 0);
+
+    return () => {
+      clearTimeout(timeoutID);
+    };
   }, [searchString]);
 
   const handleSearchChange = (event) => {
@@ -60,7 +65,6 @@ const Body = () => {
       setLoading(true);
       setArticles([]);
       setAlreadySearched(true);
-      if (searchString.length === 0) setAlreadySearched(false);
       axios
         .post(
           "https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews",
@@ -80,15 +84,25 @@ const Body = () => {
           setLoading(false);
         })
         .catch((error) => {
-          if (axios.isCancel(error)) return;
+          if (axios.isCancel(error)) {
+            setArticles([]);
+            return;
+          }
           console.log(error);
         });
     };
 
-    sendSearchString();
+    let timeoutID;
+    if (searchString.length !== 0) {
+      timeoutID = setTimeout(sendSearchString, 400);
+    }
 
     return () => {
       source.cancel();
+      clearTimeout(timeoutID);
+      setArticles([]);
+      setLoading(false);
+      setAlreadySearched(false);
     };
   }, [searchString]);
 

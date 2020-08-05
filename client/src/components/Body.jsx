@@ -115,6 +115,7 @@ const Body = () => {
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}
         handleClickSort={changeArticlesOrder}
+        numberOfArticles={articles.length}
       />
       <News
         articles={articles}

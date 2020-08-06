@@ -26,41 +26,27 @@ const Body = () => {
   };
 
   useEffect(() => {
-    const makeSearchStringValid = (validSearchString) => {
-      return validSearchString
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/\u0142/g, "l")
-        .replace(/[^a-z0-9 ]+/gi, ""); // no diacritics and special symbols - leaving only letters, numbers and spaces
-    };
-
-    const validString = makeSearchStringValid(searchString);
-    const timeoutID = setTimeout(setSearchString(validString), 0);
-
-    return () => {
-      clearTimeout(timeoutID);
-    };
-  }, [searchString]);
-
-  const handleSearchChange = (event) => {
-    setSearchString(event.target.value);
-  };
-
-  useEffect(() => {
     if (loading === false && articles.length === 0 && alreadySearched === true)
       setAlertVisible(true);
     else setAlertVisible(false);
   }, [articles.length, loading, alreadySearched]);
 
   const changeArticlesOrder = () => {
-    const articlesRev = [...articles].reverse();
-    setArticles(articlesRev);
+    setArticles((prevArticles) => [...prevArticles].reverse());
   };
 
   useEffect(() => {
     let source = axios.CancelToken.source();
 
-    const sendSearchString = async () => {
+    const makeSearchStringValid = (searchString) => {
+      return searchString
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/\u0142/g, "l")
+        .replace(/[^a-z0-9 ]+/gi, ""); // no diacritics and special symbols - leaving only letters, numbers and spaces
+    };
+
+    const sendSearchString = async (validSearchString) => {
       setAlertVisible(false);
       setLoading(true);
       setArticles([]);
@@ -69,7 +55,7 @@ const Body = () => {
         .post(
           "https://07fj9bjzr9.execute-api.eu-central-1.amazonaws.com/default/acquireNews",
           {
-            searchString: searchString,
+            searchString: validSearchString,
           },
           {
             cancelToken: source.token,
@@ -94,7 +80,11 @@ const Body = () => {
 
     let timeoutID;
     if (searchString.length !== 0) {
-      timeoutID = setTimeout(sendSearchString, 400);
+      timeoutID = setTimeout(
+        sendSearchString,
+        400,
+        makeSearchStringValid(searchString)
+      );
     }
 
     return () => {
@@ -108,7 +98,7 @@ const Body = () => {
 
   return (
     <Container className="text-center">
-      <Search onChange={handleSearchChange} />
+      <Search onChange={(event) => setSearchString(event.target.value)} />
       <Filter filterState={filterState} onChange={handleFilterChange} />
       <NewsHeader
         loading={loading}

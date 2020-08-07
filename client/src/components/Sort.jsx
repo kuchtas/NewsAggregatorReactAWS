@@ -10,7 +10,7 @@ const Sort = ({
 }) => {
   const getSortClass = () => {
     return !loading && alreadySearched && !alertVisible
-      ? "fa fa-sort"
+      ? "badge-pill"
       : "d-none";
   };
 
@@ -35,7 +35,12 @@ const Sort = ({
         className={getSortClass()}
         color="primary"
         onClick={onClick}
-      ></Button>
+        style={{
+          fontSize: "calc(0.8em + 0.4vw)",
+        }}
+      >
+        Sortuj wg daty
+      </Button>
     </div>
   );
 };

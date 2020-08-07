@@ -26,18 +26,27 @@ const Article = forwardRef(
           return missingPicture;
       }
     };
-
     return (
       <div ref={ref}>
         <Container className={getClasses()} style={{ position: "relative" }}>
-          <Row className="align-items-center">
-            <Col xs="0" className="text-left">
-              <img
-                className="thumbnail ml-3 mt-3 mb-3 rounded "
-                src={thumbnail}
-                onError={(e) => (e.target.src = missingPicture)}
-                alt="News thubmnail"
-              />
+          <Row className="align-items-center ">
+            <Col xs="0" className="text-left ">
+              <figure
+                className="m-3 text-center"
+                style={{
+                  fontSize: "calc(0.5em + 0.4vw)",
+                }}
+              >
+                <img
+                  className="thumbnail rounded"
+                  src={thumbnail}
+                  onError={(e) => (e.target.src = missingPicture)}
+                  alt="News thubmnail"
+                />
+                <figcaption className="mt-1 badge-pill badge-dark">
+                  {date.substring(0, 10)}
+                </figcaption>
+              </figure>
             </Col>
 
             <Col

@@ -19,6 +19,14 @@ const Body = () => {
   const [loading, setLoading] = useState(false);
   const [alreadySearched, setAlreadySearched] = useState(false);
 
+  const handleSaveButtonClick = (id) => {
+    const newArticles = [...articles];
+    const article = newArticles.find((element) => element.id === id);
+    if (article.saved) article.saved = false;
+    else article.saved = true;
+    setArticles(newArticles);
+  };
+
   const handleFilterChange = (event) => {
     const newFilterState = { ...filterState };
     newFilterState[event.target.id] = !newFilterState[event.target.id];
@@ -111,6 +119,7 @@ const Body = () => {
         articles={articles}
         filterState={filterState}
         onClick={changeArticlesOrder}
+        handleSaveButtonClick={handleSaveButtonClick}
       />
     </Container>
   );

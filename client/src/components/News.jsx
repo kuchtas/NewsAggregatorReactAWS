@@ -2,7 +2,7 @@ import React from "react";
 import Article from "./Article";
 import FlipMove from "react-flip-move";
 
-const News = ({ articles, filterState }) => {
+const News = ({ articles, filterState, handleSaveButtonClick }) => {
   const isChosen = (site) => {
     return filterState[site];
   };
@@ -16,12 +16,15 @@ const News = ({ articles, filterState }) => {
       {articles.map((article) => (
         <Article
           key={article.id}
+          id={article.id}
           site={article.site}
           title={article.title}
           link={article.link}
           thumbnail={article.thumbnail}
           date={article.date}
+          saved={article.saved}
           isVisible={isChosen(article.site)}
+          handleSaveButtonClick={handleSaveButtonClick}
         />
       ))}
     </FlipMove>

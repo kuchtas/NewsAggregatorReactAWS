@@ -1,14 +1,15 @@
 import React from "react";
 import AlertNoArticlesFound from "./AlertNoArticlesFound";
-import Sort from "./Sort";
+import HeaderButtons from "./HeaderButtons";
 import { Spinner } from "reactstrap";
 
 const NewsHeader = ({
   loading,
   alreadySearched,
   alertVisible,
-  handleClickSort,
+  onClickSort,
   numberOfArticles,
+  onClickShowSavedArticles,
 }) => {
   const getSpinnerClass = () => {
     return loading && alreadySearched ? "mt-5 d-inline-flex" : "d-none";
@@ -17,8 +18,9 @@ const NewsHeader = ({
   return (
     <div>
       <Spinner color="primary" className={getSpinnerClass()} />
-      <Sort
-        onClick={handleClickSort}
+      <HeaderButtons
+        onClickSort={onClickSort}
+        onClickShowSavedArticles={onClickShowSavedArticles}
         loading={loading}
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}

@@ -13,19 +13,26 @@ const Body = () => {
     OKO: true,
     NIEZALEZNA: true,
   });
+
   const [searchString, setSearchString] = useState("");
   const [articles, setArticles] = useState([]);
+
+  const loadSavedArticlesFromLocalStorage = () => {
+    const newSavedArticles = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      newSavedArticles.push(
+        JSON.parse(localStorage.getItem(localStorage.key(i)))
+      );
+    }
+    return newSavedArticles;
+  };
+  const [savedArticles, setSavedArticles] = useState(() =>
+    loadSavedArticlesFromLocalStorage()
+  );
   const [alertVisible, setAlertVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alreadySearched, setAlreadySearched] = useState(false);
-
-  const handleSaveButtonClick = (id) => {
-    const newArticles = [...articles];
-    const article = newArticles.find((element) => element.id === id);
-    if (article.saved) article.saved = false;
-    else article.saved = true;
-    setArticles(newArticles);
-  };
+  const [showingSaved, setShowingSaved] = useState(false);
 
   const handleFilterChange = (event) => {
     const newFilterState = { ...filterState };
@@ -54,7 +61,18 @@ const Body = () => {
         .replace(/[^a-z0-9 ]+/gi, ""); // no diacritics and special symbols - leaving only letters, numbers and spaces
     };
 
+    const compareWithSavedArticles = (data) => {
+      // TODO refactor when possible
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < localStorage.length; j++) {
+          if (data[i].link === localStorage.key(j)) data[i].saved = true;
+        }
+      }
+      return data;
+    };
+
     const sendSearchString = async (validSearchString) => {
+      setShowingSaved(false);
       setAlertVisible(false);
       setLoading(true);
       setArticles([]);
@@ -74,7 +92,8 @@ const Body = () => {
           }
         )
         .then((response) => {
-          setArticles(response.data);
+          const data = compareWithSavedArticles(response.data);
+          setArticles(data);
           setLoading(false);
         })
         .catch((error) => {
@@ -104,6 +123,37 @@ const Body = () => {
     };
   }, [searchString]);
 
+  const showSavedArticles = () => {
+    setLoading(false);
+    setAlreadySearched(false);
+    setShowingSaved(true);
+    setArticles(savedArticles);
+  };
+
+  const handleSaveButtonClick = (id) => {
+    const newArticles = [...articles];
+    const article = newArticles.find((element) => element.id === id);
+    if (article.saved) {
+      article.saved = false;
+      localStorage.removeItem(article.link);
+
+      setSavedArticles((prevSavedArticles) => {
+        const newSavedArticles = [...prevSavedArticles];
+        newSavedArticles.splice(prevSavedArticles.indexOf(article), 1);
+        return newSavedArticles;
+      });
+    } else {
+      article.saved = true;
+      localStorage.setItem(article.link, JSON.stringify(article));
+      setSavedArticles((prevSavedArticles) => [...prevSavedArticles, article]);
+    }
+    setArticles(newArticles);
+  };
+
+  useEffect(() => {
+    if (showingSaved === true) setArticles(savedArticles);
+  }, [savedArticles]);
+
   return (
     <Container className="text-center">
       <Search onChange={(event) => setSearchString(event.target.value)} />
@@ -112,13 +162,13 @@ const Body = () => {
         loading={loading}
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}
-        handleClickSort={changeArticlesOrder}
+        onClickSort={changeArticlesOrder}
+        onClickShowSavedArticles={showSavedArticles}
         numberOfArticles={articles.length}
       />
       <News
         articles={articles}
         filterState={filterState}
-        onClick={changeArticlesOrder}
         handleSaveButtonClick={handleSaveButtonClick}
       />
     </Container>

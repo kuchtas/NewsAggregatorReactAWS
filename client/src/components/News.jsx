@@ -15,7 +15,7 @@ const News = ({ articles, filterState, handleSaveButtonClick }) => {
     >
       {articles.map((article) => (
         <Article
-          key={article.id}
+          key={article.link}
           id={article.id}
           site={article.site}
           title={article.title}

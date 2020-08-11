@@ -1,16 +1,23 @@
 import React from "react";
 import { Button } from "reactstrap";
 
-const Sort = ({
-  onClick,
+const HeaderButtons = ({
+  onClickSort,
+  onClickShowSavedArticles,
   loading,
   alreadySearched,
   alertVisible,
   numberOfArticles,
 }) => {
-  const getSortClass = () => {
+  const getSortButtonClass = () => {
     return !loading && alreadySearched && !alertVisible
-      ? "badge-pill"
+      ? "badge-pill mt-1"
+      : "d-none";
+  };
+
+  const getSavedArticlesButtonClass = () => {
+    return !loading && !alertVisible && localStorage.length > 0
+      ? "badge-pill mt-1"
       : "d-none";
   };
 
@@ -32,17 +39,29 @@ const Sort = ({
         </span>
       </div>
       <Button
-        className={getSortClass()}
+        className={getSavedArticlesButtonClass()}
         color="primary"
-        onClick={onClick}
+        onClick={onClickShowSavedArticles}
+        style={{
+          fontSize: "calc(0.8em + 0.4vw)",
+          float: "left",
+        }}
+      >
+        Pokaż zapisane
+      </Button>
+      <Button
+        className={getSortButtonClass()}
+        color="primary"
+        onClick={onClickSort}
         style={{
           fontSize: "calc(0.8em + 0.4vw)",
         }}
       >
         Sortuj wg daty
       </Button>
+      <div style={{ clear: "both" }}></div>
     </div>
   );
 };
 
-export default Sort;
+export default HeaderButtons;

@@ -8,9 +8,10 @@ const HeaderButtons = ({
   alreadySearched,
   alertVisible,
   numberOfArticles,
+  showingSaved,
 }) => {
   const getSortButtonClass = () => {
-    return !loading && alreadySearched && !alertVisible
+    return !loading && alreadySearched && !alertVisible && !showingSaved
       ? "badge-pill mt-1"
       : "d-none";
   };

@@ -13,10 +13,8 @@ const Body = () => {
     OKO: true,
     NIEZALEZNA: true,
   });
-
   const [searchString, setSearchString] = useState("");
   const [articles, setArticles] = useState([]);
-
   const loadSavedArticlesFromLocalStorage = () => {
     const newSavedArticles = [];
     for (let i = 0; i < localStorage.length; i++) {
@@ -41,7 +39,12 @@ const Body = () => {
   };
 
   useEffect(() => {
-    if (loading === false && articles.length === 0 && alreadySearched === true)
+    if (
+      loading === false &&
+      articles.length === 0 &&
+      alreadySearched === true &&
+      showingSaved === false
+    )
       setAlertVisible(true);
     else setAlertVisible(false);
   }, [articles.length, loading, alreadySearched]);
@@ -93,6 +96,8 @@ const Body = () => {
         )
         .then((response) => {
           const data = compareWithSavedArticles(response.data);
+          sessionStorage.clear();
+          sessionStorage.setItem("data", JSON.stringify(data));
           setArticles(data);
           setLoading(false);
         })
@@ -123,12 +128,19 @@ const Body = () => {
     };
   }, [searchString]);
 
-  const showSavedArticles = () => {
-    setLoading(false);
-    setAlreadySearched(false);
-    setShowingSaved(true);
-    setArticles(savedArticles);
-  };
+  useEffect(() => {
+    const loadArticlesFromSessionStorage = () => {
+      const newArticles = JSON.parse(sessionStorage.getItem("data")) || [];
+      return newArticles;
+    };
+
+    if (showingSaved === true) {
+      setLoading(false);
+      setArticles(savedArticles);
+    } else {
+      setArticles(loadArticlesFromSessionStorage());
+    }
+  }, [showingSaved, savedArticles]);
 
   const handleSaveButtonClick = (id) => {
     const newArticles = [...articles];
@@ -136,6 +148,15 @@ const Body = () => {
     if (article.saved) {
       article.saved = false;
       localStorage.removeItem(article.link);
+
+      const sessionStorageArticles = JSON.parse(sessionStorage.getItem("data"));
+      const articleToBeChanged = sessionStorageArticles.find(
+        (element) => element.link === article.link
+      );
+      if (articleToBeChanged) {
+        articleToBeChanged.saved = false;
+        sessionStorage.setItem("data", JSON.stringify(sessionStorageArticles));
+      }
 
       setSavedArticles((prevSavedArticles) => {
         const newSavedArticles = [...prevSavedArticles];
@@ -145,14 +166,20 @@ const Body = () => {
     } else {
       article.saved = true;
       localStorage.setItem(article.link, JSON.stringify(article));
+
+      const sessionStorageArticles = JSON.parse(sessionStorage.getItem("data"));
+      const articleToBeChanged = sessionStorageArticles.find(
+        (element) => element.link === article.link
+      );
+      if (articleToBeChanged) {
+        articleToBeChanged.saved = true;
+        sessionStorage.setItem("data", JSON.stringify(sessionStorageArticles));
+      }
+
       setSavedArticles((prevSavedArticles) => [...prevSavedArticles, article]);
     }
     setArticles(newArticles);
   };
-
-  useEffect(() => {
-    if (showingSaved === true) setArticles(savedArticles);
-  }, [savedArticles]);
 
   return (
     <Container className="text-center">
@@ -162,8 +189,11 @@ const Body = () => {
         loading={loading}
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}
+        showingSaved={showingSaved}
         onClickSort={changeArticlesOrder}
-        onClickShowSavedArticles={showSavedArticles}
+        onClickShowSavedArticles={() =>
+          setShowingSaved((prevShowingSaved) => !prevShowingSaved)
+        }
         numberOfArticles={articles.length}
       />
       <News

@@ -165,6 +165,7 @@ const Body = () => {
         onClickSort={changeArticlesOrder}
         onClickShowSavedArticles={showSavedArticles}
         numberOfArticles={articles.length}
+        showingSaved={showingSaved}
       />
       <News
         articles={articles}

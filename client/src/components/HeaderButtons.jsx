@@ -8,6 +8,7 @@ const HeaderButtons = ({
   alreadySearched,
   alertVisible,
   numberOfArticles,
+  showingSaved,
 }) => {
   const getSortButtonClass = () => {
     return !loading && alreadySearched && !alertVisible
@@ -16,15 +17,13 @@ const HeaderButtons = ({
   };
 
   const getSavedArticlesButtonClass = () => {
-    return !loading && !alertVisible && localStorage.length > 0
+    return !loading && !alertVisible && localStorage.length > 0 && !showingSaved
       ? "badge-pill mt-1"
       : "d-none";
   };
 
   const getTextClass = () => {
-    return !loading && alreadySearched && !alertVisible
-      ? "text-center"
-      : "d-none";
+    return !loading && !alertVisible ? "text-center" : "d-none";
   };
   return (
     <div className="text-right">
@@ -35,7 +34,9 @@ const HeaderButtons = ({
             color: "grey",
           }}
         >
-          Znalezione: {numberOfArticles}
+          {showingSaved
+            ? `Zapisane: ${numberOfArticles}`
+            : `Znalezione: ${numberOfArticles}`}
         </span>
       </div>
       <Button

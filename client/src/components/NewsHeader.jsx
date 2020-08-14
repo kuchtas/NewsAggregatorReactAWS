@@ -10,6 +10,7 @@ const NewsHeader = ({
   onClickSort,
   numberOfArticles,
   onClickShowSavedArticles,
+  showingSaved,
 }) => {
   const getSpinnerClass = () => {
     return loading && alreadySearched ? "mt-5 d-inline-flex" : "d-none";
@@ -25,6 +26,7 @@ const NewsHeader = ({
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}
         numberOfArticles={numberOfArticles}
+        showingSaved={showingSaved}
       />
       <AlertNoArticlesFound alertVisible={alertVisible} />
     </div>

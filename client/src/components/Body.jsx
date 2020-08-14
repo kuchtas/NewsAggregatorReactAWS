@@ -143,7 +143,13 @@ const Body = () => {
 
   return (
     <Container className="text-center">
-      <Search onChange={(event) => setSearchString(event.target.value)} />
+      <Search
+        onChange={(event) => setSearchString(event.target.value)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          setSearchString((prevSearchString) => prevSearchString + " ");
+        }}
+      />
       <Filter filterState={filterState} onChange={handleFilterChange} />
       <NewsHeader
         loading={loading}

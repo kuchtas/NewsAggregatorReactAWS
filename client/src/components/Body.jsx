@@ -16,19 +16,6 @@ const Body = () => {
 
   const [searchString, setSearchString] = useState("");
   const [articles, setArticles] = useState([]);
-
-  const loadSavedArticlesFromLocalStorage = () => {
-    const newSavedArticles = [];
-    for (let i = 0; i < localStorage.length; i++) {
-      newSavedArticles.push(
-        JSON.parse(localStorage.getItem(localStorage.key(i)))
-      );
-    }
-    return newSavedArticles;
-  };
-  const [savedArticles, setSavedArticles] = useState(() =>
-    loadSavedArticlesFromLocalStorage()
-  );
   const [alertVisible, setAlertVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [alreadySearched, setAlreadySearched] = useState(false);
@@ -123,36 +110,36 @@ const Body = () => {
     };
   }, [searchString]);
 
-  const showSavedArticles = () => {
-    setLoading(false);
-    setAlreadySearched(false);
-    setShowingSaved(true);
-    setArticles(savedArticles);
-  };
-
   const handleSaveButtonClick = (id) => {
     const newArticles = [...articles];
     const article = newArticles.find((element) => element.id === id);
     if (article.saved) {
       article.saved = false;
       localStorage.removeItem(article.link);
-
-      setSavedArticles((prevSavedArticles) => {
-        const newSavedArticles = [...prevSavedArticles];
-        newSavedArticles.splice(prevSavedArticles.indexOf(article), 1);
-        return newSavedArticles;
-      });
     } else {
       article.saved = true;
       localStorage.setItem(article.link, JSON.stringify(article));
-      setSavedArticles((prevSavedArticles) => [...prevSavedArticles, article]);
     }
     setArticles(newArticles);
   };
 
   useEffect(() => {
-    if (showingSaved === true) setArticles(savedArticles);
-  }, [savedArticles]);
+    const loadSavedArticlesFromLocalStorage = () => {
+      const newSavedArticles = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        newSavedArticles.push(
+          JSON.parse(localStorage.getItem(localStorage.key(i)))
+        );
+      }
+      return newSavedArticles;
+    };
+
+    if (showingSaved === true) {
+      setLoading(false);
+      setAlreadySearched(false);
+      setArticles(loadSavedArticlesFromLocalStorage());
+    }
+  }, [showingSaved, localStorage.length]);
 
   return (
     <Container className="text-center">
@@ -163,7 +150,9 @@ const Body = () => {
         alreadySearched={alreadySearched}
         alertVisible={alertVisible}
         onClickSort={changeArticlesOrder}
-        onClickShowSavedArticles={showSavedArticles}
+        onClickShowSavedArticles={() =>
+          setShowingSaved((prevShowingSaved) => !prevShowingSaved)
+        }
         numberOfArticles={articles.length}
         showingSaved={showingSaved}
       />

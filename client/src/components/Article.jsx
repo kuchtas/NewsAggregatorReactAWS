@@ -95,7 +95,9 @@ const Article = forwardRef(
                     className="stretched-link"
                     target="_blank"
                     rel="noopener noreferrer"
-                  ></a>
+                  >
+                    {" "}
+                  </a>
                 </Row>
               </Container>
             </Col>

@@ -14,6 +14,7 @@ exports.handler = async (event) => {
     if (event.httpMethod === "POST") {
       const data = JSON.parse(event.body);
       const { searchString } = data;
+      console.log(searchString);
       const wprostArticles = await getWPROST(searchString);
       const dzienikArticles = await getDZIENNIK(searchString);
       const okoArticles = await getOKO(searchString);
@@ -71,15 +72,22 @@ const polishMonthsObject = {
 };
 
 const parseDate = (dateString) => {
+  const zeroTime = (dateWithWrongTime) => {
+    dateWithWrongTime.setHours(0);
+    dateWithWrongTime.setMinutes(0);
+    dateWithWrongTime.setSeconds(0);
+    dateWithWrongTime.setMilliseconds(0);
+  };
   switch (dateString) {
     case "dzisiaj":
       const today = new Date();
+      zeroTime(today);
       return today;
 
     case "wczoraj":
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
-      yesterday.toDateString();
+      zeroTime(yesterday);
       return yesterday;
 
     default:
@@ -95,8 +103,7 @@ const parseDate = (dateString) => {
         polishMonthsObject[month]
       );
       const date = new Date(dateEnglish);
-      date.setDate(date.getDate() + 1); // days are counted starting from 0 to 30 in Date() so we need to add one day
-      date.toDateString();
+      date.setDate(date.getDate());
       return date;
   }
 };
@@ -328,7 +335,7 @@ const getNIEZALEZNA = async (word) => {
 
         const year = parseInt(dateString.slice(-4));
         const month = parseInt(dateString.slice(-7, -5)) - 1;
-        const day = parseInt(dateString.slice(-10, -8)) + 1;
+        const day = parseInt(dateString.slice(-10, -8));
         const date = new Date(year, month, day);
 
         if (title !== "" && thumbnail !== "" && typeof link !== "undefined") {
